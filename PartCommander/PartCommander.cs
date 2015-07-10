@@ -30,6 +30,7 @@ namespace PartCommander
     public class PartCommander : MonoBehaviour
     {
         internal ApplicationLauncherButton launcherButton = null;
+        internal IButton blizzyButton = null;
 
         private List<Part> activeParts = new List<Part>();
         private string partFilter = "";
@@ -39,9 +40,10 @@ namespace PartCommander
 
         private List<PartCategories> partCats;
 
-        private bool updateParts = true;
+        internal bool updateParts = true;
 
         private PCWindow currentWindow;
+        private SettingsWindow settingsWindow;
 
         private bool visibleUI = true;
 
@@ -52,7 +54,9 @@ namespace PartCommander
 
         private ModStyle modStyle;
 
-        private string showTooltip = "";
+        internal string showTooltip = "";
+
+        Settings settings = new Settings("PartCommander.cfg");
 
         public static PartCommander Instance { get; private set; }
         public PartCommander()
@@ -61,13 +65,22 @@ namespace PartCommander
         }
 
         // ------------------------------- Main Events --------------------------------
-        public void Awake()
+        internal void Awake()
         {
+
+            settings.Load();
+            settings.Save();
+
             modStyle = new ModStyle();
 
             // Hook into events for Application Launcher
-            GameEvents.onGUIApplicationLauncherReady.Add(OnGUIApplicationLauncherReady);
+            if (settings.useStockToolbar)
+            {
+                GameEvents.onGUIApplicationLauncherReady.Add(OnGUIApplicationLauncherReady);
+            }
+
             GameEvents.onGameSceneLoadRequested.Add(onSceneChange);
+
         }
 
         public void Start()
@@ -76,11 +89,7 @@ namespace PartCommander
             GameEvents.onShowUI.Add(showUI);
             GameEvents.onHideUI.Add(hideUI);
 
-            // Load Application Launcher
-            if (launcherButton == null)
-            {
-                OnGUIApplicationLauncherReady();
-            }
+            addLauncherButtons();
 
             // Add hooks for updating part list when needed
             GameEvents.onVesselWasModified.Add(triggerUpdateParts);
@@ -93,6 +102,37 @@ namespace PartCommander
             partCats.Sort();
             partCats = partCats.OrderBy(o => o.ToString()).ToList();
             partCats.Insert(0, PartCategories.none);
+
+            // Create settings window
+            settingsWindow = new SettingsWindow(modStyle,settings);
+            
+        }
+
+        private void addLauncherButtons()
+        {
+            // Load Blizzy toolbar
+            if (blizzyButton == null)
+            {
+                if (ToolbarManager.ToolbarAvailable)
+                {
+                    // Create button
+                    blizzyButton = ToolbarManager.Instance.add("PartCommander", "blizzyButton");
+                    blizzyButton.TexturePath = "PartCommander/textures/blizzyToolbar";
+                    blizzyButton.ToolTip = "Part Commander";
+                    blizzyButton.OnClick += (e) => toggleWindow();
+                }
+                else
+                {
+                    // Blizzy Toolbar not available, fall back to stock launcher
+                    settings.useStockToolbar = true;
+                }
+            }
+
+            // Load Application Launcher
+            if (launcherButton == null && settings.useStockToolbar)
+            {
+                OnGUIApplicationLauncherReady();
+            }
         }
 
         public void triggerUpdateParts(Vessel v)
@@ -102,6 +142,31 @@ namespace PartCommander
 
         public void Update()
         {
+            // Load Application Launcher
+            if (launcherButton == null && settings.useStockToolbar)
+            {
+                OnGUIApplicationLauncherReady();
+                if (PCScenario.Instance.gameSettings.visibleWindow)
+                {
+                    launcherButton.SetTrue();
+                }
+            }
+
+            // Destroy application launcher
+            if (launcherButton != null && settings.useStockToolbar == false)
+            {
+                removeApplicationLauncher();
+            }
+
+            // Detect hotkey
+            if (settings.enableHotKey && Input.GetKeyDown(settings.hotKey))
+            {
+                if (GameSettings.MODIFIER_KEY.GetKey())
+                {
+                    toggleWindow();
+                }
+            }
+
             // Only proceed if a vessel is active, physics have stablized, and window is visible
             if (FlightGlobals.ActiveVessel != null && FlightGlobals.ActiveVessel.HoldPhysics == false && PCScenario.Instance != null && visibleUI && PCScenario.Instance.gameSettings.visibleWindow)
             {
@@ -174,6 +239,8 @@ namespace PartCommander
                     currentWindow.showPartSelector = !currentWindow.showPartSelector;
                     if (currentWindow.showPartSelector)
                     {
+                        setHighlighting(currentWindow.currentPart, currentWindow.symLock, false);
+
                         // Showing part selector now... clear out any selected part info.
                         currentWindow.currentPart = null;
                         currentWindow.currentPartId = 0u;
@@ -298,9 +365,14 @@ namespace PartCommander
                 }
                 if (showTooltip != "" && showTooltip != null)
                 {
-                    GUI.Label(new Rect(Input.mousePosition.x + 10, Screen.height - Input.mousePosition.y + 20, showTooltip.Length * 10, 20), showTooltip, modStyle.guiStyles["tooltip"]);
+                    float minWidth;
+                    float maxWidth;
+                    modStyle.guiStyles["tooltip"].CalcMinMaxWidth(new GUIContent(showTooltip), out minWidth, out maxWidth);
+                    GUI.Label(new Rect(Input.mousePosition.x + 10, Screen.height - Input.mousePosition.y + 20, maxWidth, 20), showTooltip, modStyle.guiStyles["tooltip"]);
                     GUI.depth = 0;
                 }
+
+                settingsWindow.draw();
 
             }
         }
@@ -308,39 +380,50 @@ namespace PartCommander
         // Remove the launcher button when the scene changes
         public void onSceneChange(GameScenes scene)
         {
-            removeLauncherButton();
+            removeLauncherButtons();
         }
 
         // Cleanup when the module is destroyed
         protected void OnDestroy()
         {
             PCScenario.Instance.gameSettings.visibleWindow = false;
-            GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIApplicationLauncherReady);
-            GameEvents.onGameSceneLoadRequested.Remove(onSceneChange);
-            removeLauncherButton();
+
+            removeLauncherButtons();
 
             if (InputLockManager.lockStack.ContainsKey(controlsLockID))
             {
                 InputLockManager.RemoveControlLock(controlsLockID);
             }
 
+            GameEvents.onGameSceneLoadRequested.Remove(onSceneChange);
+
         }
 
         // ------------------------------------------ Application Launcher / UI ---------------------------------------
         private void OnGUIApplicationLauncherReady()
         {
-            if (launcherButton == null)
+            if (launcherButton == null && settings.useStockToolbar)
             {
                 launcherButton = ApplicationLauncher.Instance.AddModApplication(showWindow, hideWindow, null, null, null, null, ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW, modStyle.GetImage("PartCommander/textures/toolbar", 38, 38));
             }
         }
 
-        public void removeLauncherButton()
+        public void removeLauncherButtons()
         {
             if (launcherButton != null)
             {
-                ApplicationLauncher.Instance.RemoveModApplication(launcherButton);
+                removeApplicationLauncher();
             }
+            if (blizzyButton != null)
+            {
+                blizzyButton.Destroy();
+            }
+        }
+
+        private void removeApplicationLauncher()
+        {
+            GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIApplicationLauncherReady);
+            ApplicationLauncher.Instance.RemoveModApplication(launcherButton);
         }
 
         public void showUI() // triggered on F2
@@ -363,6 +446,32 @@ namespace PartCommander
             PCScenario.Instance.gameSettings.visibleWindow = false;
         }
 
+        public void toggleWindow()
+        {
+            if (launcherButton != null)
+            {
+                if (PCScenario.Instance.gameSettings.visibleWindow) 
+                {
+                    launcherButton.SetFalse();
+                }
+                else
+                {
+                    launcherButton.SetTrue();
+                }
+            }
+            else
+            {
+                if (PCScenario.Instance.gameSettings.visibleWindow)
+                {
+                    hideWindow();
+                }
+                else
+                {
+                    showWindow();
+                }
+            }
+        }
+
         private void resizeWindows()
         {
             // Resize main window
@@ -373,6 +482,9 @@ namespace PartCommander
             {
                 resizeWindow(pow);
             }
+
+            settingsWindow.resizeWindow();
+
         }
 
         private void resizeWindow(PCWindow w)
@@ -422,6 +534,11 @@ namespace PartCommander
                         overSymLock = pow.symLock;
                     }
                 }
+
+                if (settingsWindow.windowRect.Contains(mousePos))
+                {
+                    overWindow = true;
+                }
             }
 
             if (controlsLocked)
@@ -449,7 +566,7 @@ namespace PartCommander
             {
                 if (visibleUI && PCScenario.Instance.gameSettings.visibleWindow && overWindow)
                 {
-                    InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, controlsLockID);
+                    InputLockManager.SetControlLock(ControlTypes.All, controlsLockID);
                     controlsLocked = true;
 
                     if (overPart != null)
@@ -590,7 +707,7 @@ namespace PartCommander
             // Create part popout button in upper left corner
             if (w.currentPart != null && activeParts.Count > 0 && w.popOutWindow == false)
             {
-                if (GUI.Button(new Rect(7, 3, 20, 20), new GUIContent("", "Pop off in new window"), modStyle.guiStyles["popoutButton"]))
+                if (GUI.Button(new Rect(7f, 3f, 20f, 20f), new GUIContent("", "Pop off in new window"), modStyle.guiStyles["popoutButton"]))
                 {
                     w.togglePartSelector = true;
                     popOut = true;
@@ -605,9 +722,14 @@ namespace PartCommander
                     currentWindow.partWindows.Remove(w.windowId);
                 }
             }
+            else
+            {
+                // Create settings button in upper right corner
+                settingsWindow.showWindow = GUI.Toggle(new Rect(w.windowRect.width - 23, 3f, 20f, 20f), settingsWindow.showWindow, new GUIContent("", "Settings"), modStyle.guiStyles["settings"]);
+            }
 
             // Create resize button in bottom right corner
-            if (GUI.RepeatButton(new Rect(w.windowRect.width - 23, w.windowRect.height - 23, 20, 20), "", modStyle.guiStyles["resizeButton"]))
+            if (GUI.RepeatButton(new Rect(w.windowRect.width - 23f, w.windowRect.height - 23f, 20f, 20f), "", modStyle.guiStyles["resizeButton"]))
             {
                 w.resizingWindow = true;
             }
@@ -678,8 +800,19 @@ namespace PartCommander
                                     {
                                         if (f.guiActive && f.guiName != "")
                                         {
-                                            includePart = true;
-                                            break;
+                                            if (settings.hideUnAct)
+                                            {
+                                                if (f.uiControlFlight.GetType().ToString() == "UI_Toggle" || f.uiControlFlight.GetType().ToString() == "UI_FloatRange")
+                                                {
+                                                    includePart = true;
+                                                    break;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                includePart = true;
+                                                break;
+                                            }
                                         }
                                     }
                                     if (!includePart)
@@ -1022,6 +1155,7 @@ namespace PartCommander
                         updateParts = true;
                         w.showFilter = newFilter;
                     }
+                    
                 }
             }
             else
@@ -1039,54 +1173,62 @@ namespace PartCommander
 
         private void setHighlighting(Part p, bool symLock, bool highlight)
         {
-            if (GameSettings.EDGE_HIGHLIGHTING_PPFX)
+            try
             {
-                Transform model = p.FindModelTransform("model");
-                Highlighter h = model.gameObject.GetComponent<Highlighter>();
-                if (h != null)
+                if (GameSettings.EDGE_HIGHLIGHTING_PPFX)
                 {
-                    if (highlight)
+                    Transform model = p.FindModelTransform("model");
+                    Highlighter h = model.gameObject.GetComponent<Highlighter>();
+                    if (h != null)
                     {
-                        h.ConstantOn(XKCDColors.Orange);
-                    }
-                    else
-                    {
-                        h.ConstantOff();
-                    }
-
-                    if (symLock)
-                    {
-                        foreach (Part symPart in p.symmetryCounterparts)
+                        if (highlight)
                         {
-                            Transform symModel = symPart.FindModelTransform("model");
-                            Highlighter symH = symModel.gameObject.GetComponent<Highlighter>();
-                            if (symH != null)
+                            h.ConstantOn(XKCDColors.Orange);
+                        }
+                        else
+                        {
+                            h.ConstantOff();
+                        }
+
+                        if (symLock)
+                        {
+                            foreach (Part symPart in p.symmetryCounterparts)
                             {
-                                if (highlight)
+                                Transform symModel = symPart.FindModelTransform("model");
+                                Highlighter symH = symModel.gameObject.GetComponent<Highlighter>();
+                                if (symH != null)
                                 {
-                                    // Highlight the secondary symmetrical parts in a different colour
-                                    symH.ConstantOn(XKCDColors.Yellow);
-                                }
-                                else
-                                {
-                                    symH.ConstantOff();
+                                    if (highlight)
+                                    {
+                                        // Highlight the secondary symmetrical parts in a different colour
+                                        symH.ConstantOn(XKCDColors.Yellow);
+                                    }
+                                    else
+                                    {
+                                        symH.ConstantOff();
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                p.SetHighlight(highlight, false);
-                if (symLock)
+                else
                 {
-                    foreach (Part symPart in p.symmetryCounterparts)
+                    p.SetHighlight(highlight, false);
+                    if (symLock)
                     {
-                        symPart.SetHighlight(highlight, false);
+                        foreach (Part symPart in p.symmetryCounterparts)
+                        {
+                            symPart.SetHighlight(highlight, false);
+                        }
                     }
-                }
 
+                }
+            }
+            catch (Exception ex)
+            {
+                // catch any errors from trying to set highlighting on nonexistent parts.
+                // TODO: fix this properly
             }
 
         }
