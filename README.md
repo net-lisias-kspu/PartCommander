@@ -3,11 +3,17 @@ Plugin for Kerbal Space Program (KSP).  Access the right-click action menus from
 
 Copyright 2016, Sean McDougall
 
-GitHub: https://github.com/seanmcdougall/PartCommander
+Github: https://github.com/linuxgurugamer/PartCommander
+Old GitHub: https://github.com/seanmcdougall/PartCommander
 
 INSTALLATION
 
 Copy the "PartCommanderContinued" folder and all its contents into your KSP/GameData folder.
+
+ChangeLog for PartCommanderContinued
+
+0.1.0 - Initial release
+0.1.1 - Fixed problem with toolbarwrapper.cs
 
 CHANGELOG
 
