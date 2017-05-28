@@ -1,6 +1,6 @@
 ﻿
 
-set H=R:\KSP_1.1.4_dev
+set H=R:\KSP_1.3.0_dev
 
 copy bin\Debug\PartCommanderContinued.dll ..\GameData\PartCommanderContinued\Plugins
 
