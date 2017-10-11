@@ -14,6 +14,10 @@ ChangeLog for PartCommanderContinued
 
 0.1.0 - Initial release
 0.1.1 - Fixed problem with toolbarwrapper.cs
+0.1.2 = Updated for KSP 1.3
+1.1.2 - 
+	Updated for KSP 1.3.1
+	Changed version numbering to be in line with original mod numbering
 
 CHANGELOG
 
