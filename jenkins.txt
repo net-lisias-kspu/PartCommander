@@ -24,7 +24,7 @@
 # 0:1.3
 
 # 1:GAMEDIR, VERSIONFILE [, GITHUBREPO ]
-1:PartCommanderContinued, PartCommanderContinued.version
+1:PartCommanderContinued, PartCommanderContinued.version, PartCommander
 
 # 2:PROJNAME, PROJFILE, VERSIONFILE, PLUGINSFOLDER
 2:PartCommanderContinued,PartCommanderContinued/PartCommanderContinued.csproj,PartCommanderContinued.version,GameData/PartCommander/Plugins
