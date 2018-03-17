@@ -1,4 +1,5 @@
-﻿/*
+﻿#if false
+/*
 Copyright (c) 2013-2015, Maik Schreiber
 All rights reserved.
 
@@ -896,3 +897,4 @@ namespace PartCommanderContinued
 
     #endregion
 }
+#endif

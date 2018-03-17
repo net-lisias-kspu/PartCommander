@@ -23,6 +23,11 @@ using System.Text;
 using UnityEngine;
 //using HighlightingSystem;
 using KSP.UI.Screens;
+using KSP.Localization;
+
+using ClickThroughFix;
+using ToolbarControl_NS;
+
 
 namespace PartCommanderContinued
 {
@@ -30,8 +35,11 @@ namespace PartCommanderContinued
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class PartCommander : MonoBehaviour
     {
+#if false
         internal ApplicationLauncherButton launcherButton = null;
         internal IButton blizzyButton = null;
+#endif
+        internal ToolbarControl toolbarControl = null;
 
         private List<Part> activeParts = new List<Part>();
         private List<Part> highlightedParts = new List<Part>();
@@ -76,11 +84,12 @@ namespace PartCommanderContinued
             modStyle = new ModStyle();
 
             // Hook into events for Application Launcher
+#if false
             if (settings.useStockToolbar)
             {
                 GameEvents.onGUIApplicationLauncherReady.Add(OnGUIApplicationLauncherReady);
             }
-
+#endif
             GameEvents.onGameSceneLoadRequested.Add(onSceneChange);
 
         }
@@ -91,7 +100,7 @@ namespace PartCommanderContinued
             GameEvents.onShowUI.Add(showUI);
             GameEvents.onHideUI.Add(hideUI);
 
-            addLauncherButtons();
+            AddLauncherButtons();
 
             // Add hooks for updating part list when needed
             GameEvents.onVesselWasModified.Add(triggerUpdateParts);
@@ -109,7 +118,7 @@ namespace PartCommanderContinued
             settingsWindow = new SettingsWindow(modStyle, settings);
 
         }
-
+#if false
         private void addLauncherButtons()
         {
             // Load Blizzy toolbar
@@ -136,6 +145,7 @@ namespace PartCommanderContinued
                 OnGUIApplicationLauncherReady();
             }
         }
+#endif
 
         public void triggerUpdateParts(Vessel v)
         {
@@ -144,6 +154,10 @@ namespace PartCommanderContinued
 
         public void Update()
         {
+            if (toolbarControl != null)
+                toolbarControl.UseBlizzy(!settings.useStockToolbar);
+
+#if false
             // Load Application Launcher
             if (launcherButton == null && settings.useStockToolbar)
             {
@@ -154,12 +168,13 @@ namespace PartCommanderContinued
                 }
             }
 
+
             // Destroy application launcher
             if (launcherButton != null && settings.useStockToolbar == false)
             {
                 removeApplicationLauncher();
             }
-
+#endif
             // Detect hotkey
             if (settings.enableHotKey && Input.GetKeyDown(settings.hotKey))
             {
@@ -182,8 +197,11 @@ namespace PartCommanderContinued
                 // If we don't have a selected part but we do have an id, then resurrect it
                 if (currentWindow.currentPart == null && currentWindow.currentPartId != 0u)
                 {
-                    foreach (Part p in FlightGlobals.ActiveVessel.Parts)
+                    for (int pi = 0; pi < FlightGlobals.ActiveVessel.Parts.Count; pi++)
+                    //foreach (Part p in FlightGlobals.ActiveVessel.Parts)
                     {
+                        Part p = FlightGlobals.ActiveVessel.Parts[pi];
+                        Log.Info("for: 1, pi: " + pi);
                         if (p.flightID == currentWindow.currentPartId)
                         {
                             currentWindow.currentPart = p;
@@ -198,13 +216,17 @@ namespace PartCommanderContinued
                 }
 
                 // Load any popout windows
+                // partWindows is a dictionary, can't repace the foreach
                 foreach (PCWindow pow in currentWindow.partWindows.Values)
                 {
                     // Resurrect the part if necessary
                     if (pow.currentPart == null & pow.currentPartId != 0u)
                     {
-                        foreach (Part p in FlightGlobals.ActiveVessel.Parts)
+                        for (int pi = 0; pi < FlightGlobals.ActiveVessel.Parts.Count; pi++)
+                        //foreach (Part p in FlightGlobals.ActiveVessel.Parts)
                         {
+                            Log.Info("for: 2, pi: " + pi);
+                            Part p = FlightGlobals.ActiveVessel.Parts[pi];
                             if (p.flightID == pow.currentPartId)
                             {
                                 pow.currentPart = p;
@@ -356,14 +378,14 @@ namespace PartCommanderContinued
             if (visibleUI && FlightGlobals.ActiveVessel != null && currentWindow != null && PCScenario.Instance != null && PCScenario.Instance.gameSettings.visibleWindow)
             {
                 GUI.skin = modStyle.skin;
-                currentWindow.windowRect = GUILayout.Window(currentWindow.windowId, currentWindow.windowRect, mainWindow, "");
+                currentWindow.windowRect = ClickThruBlocker.GUILayoutWindow(currentWindow.windowId, currentWindow.windowRect, mainWindow, "");
                 // Set the default location/size for new windows to be the same as this one
                 PCScenario.Instance.gameSettings.windowDefaultRect = currentWindow.windowRect;
 
                 // Process any popout windows
                 foreach (PCWindow pow in currentWindow.partWindows.Values)
                 {
-                    pow.windowRect = GUILayout.Window(pow.windowId, pow.windowRect, partWindow, "");
+                    pow.windowRect = ClickThruBlocker.GUILayoutWindow(pow.windowId, pow.windowRect, partWindow, "");
                 }
                 if (showTooltip != "" && showTooltip != null)
                 {
@@ -402,6 +424,7 @@ namespace PartCommanderContinued
         }
 
         // ------------------------------------------ Application Launcher / UI ---------------------------------------
+#if false
         private void OnGUIApplicationLauncherReady()
         {
             if (launcherButton == null && settings.useStockToolbar)
@@ -414,9 +437,26 @@ namespace PartCommanderContinued
                     modStyle.GetImage("PartCommanderContinued/textures/toolbar", 38, 38));
             }
         }
+#endif
+        void AddLauncherButtons()
+        {
+            toolbarControl = gameObject.AddComponent<ToolbarControl>();
+            toolbarControl.AddToAllToolbars(
+                    showWindow,
+                    hideWindow,
+                 ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
+                "PartCommander_NS",
+                "partCommanderButton",
+                "PartCommanderContinued/textures/toolbar",
+                "PartCommanderContinued/textures/blizzyToolbar",
+                "Part Commander"
+            );
+            toolbarControl.UseBlizzy(!settings.useStockToolbar);
+        }
 
         public void removeLauncherButtons()
         {
+#if false
             if (launcherButton != null)
             {
                 removeApplicationLauncher();
@@ -425,13 +465,17 @@ namespace PartCommanderContinued
             {
                 blizzyButton.Destroy();
             }
+#endif
+            toolbarControl.OnDestroy();
+            Destroy(toolbarControl);
         }
-
+#if false
         private void removeApplicationLauncher()
         {
             GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIApplicationLauncherReady);
             ApplicationLauncher.Instance.RemoveModApplication(launcherButton);
         }
+#endif
 
         public void showUI() // triggered on F2
         {
@@ -461,6 +505,8 @@ namespace PartCommanderContinued
 
         public void toggleWindow()
         {
+            PartCommander.Instance.toolbarControl.SetFalse();
+#if false
             if (launcherButton != null)
             {
                 if (PCScenario.Instance.gameSettings.visibleWindow)
@@ -483,6 +529,7 @@ namespace PartCommanderContinued
                     showWindow();
                 }
             }
+#endif
         }
 
         private void resizeWindows()
@@ -773,7 +820,7 @@ namespace PartCommanderContinued
 
 
             // Make window draggable by title
-            GUI.DragWindow(w.dragRect);
+            GUI.DragWindow();
         }
 
         // ----------------------------------- Part Selector -------------------------------
@@ -782,8 +829,11 @@ namespace PartCommanderContinued
             // Build list of active parts
             activeParts.Clear();
             List<Part> hiddenParts = new List<Part>();
-            foreach (Part p in FlightGlobals.ActiveVessel.Parts)
+            for (int pi = 0; pi < FlightGlobals.ActiveVessel.Parts.Count; pi++)
+            //foreach (Part p in FlightGlobals.ActiveVessel.Parts)
             {
+                Part p = FlightGlobals.ActiveVessel.Parts[pi];
+
                 if (partFilterCategory == PartCategories.none || p.partInfo.category == partFilterCategory)
                 {
                     bool includePart = false;
@@ -792,15 +842,18 @@ namespace PartCommanderContinued
                         // Hide other members of the symmetry
                         if (currentWindow.symLock)
                         {
-                            foreach (Part symPart in p.symmetryCounterparts)
+                            for (int psi = 0; psi < p.symmetryCounterparts.Count; psi++)
+                            //foreach (Part symPart in p.symmetryCounterparts)
                             {
+                                Part symPart = p.symmetryCounterparts[psi];
                                 hiddenParts.Add(symPart);
                             }
                         }
-
-
-                        foreach (PartModule pm in p.Modules)
+                        for (int pmi = 0; pmi < p.Modules.Count; pmi++)
+                        //foreach (PartModule pm in p.Modules)
                         {
+                            PartModule pm = p.Modules[pmi];
+     
                             if (includePart)
                             {
                                 // Part was already included, so break out
@@ -810,8 +863,10 @@ namespace PartCommanderContinued
                             {
                                 if (pm.Fields != null || pm.Events != null)
                                 {
-                                    foreach (BaseField f in pm.Fields)
+                                    for (int bfi = 0; bfi < pm.Fields.Count; bfi++)
+                                    //foreach (BaseField f in pm.Fields)
                                     {
+                                        BaseField f = pm.Fields[bfi];
                                         if (f.guiActive && f.guiName != "")
                                         {
                                             if (settings.hideUnAct)
@@ -831,8 +886,12 @@ namespace PartCommanderContinued
                                     }
                                     if (!includePart)
                                     {
+                                        // For some reason, using the count (which is commented out)
+                                        // gets null events
+                                        //for (int bei = 0; bei < pm.Events.Count; bei++)
                                         foreach (BaseEvent e in pm.Events)
                                         {
+                                            //BaseEvent e = pm.Events[bei];
                                             if (e.guiActive && e.active)
                                             {
                                                 includePart = true;
@@ -840,6 +899,7 @@ namespace PartCommanderContinued
                                             }
                                         }
                                     }
+                                    Log.Info("3l");
                                     if (includePart)
                                     {
                                         activeParts.Add(p);
@@ -849,6 +909,7 @@ namespace PartCommanderContinued
                         }
                     }
                 }
+
             }
             if (partFilter != "")
             {
@@ -877,8 +938,12 @@ namespace PartCommanderContinued
         {
             GUILayout.Space(10f);
 
-            foreach (Part p in activeParts)
+            for (int pi = 0; pi < activeParts.Count; pi++)
+            //foreach (Part p in activeParts)
             {
+                Log.Info("for: 5, pi: " + pi);
+                Part p = activeParts[pi];
+
                 string partTitle = (currentWindow.symLock && p.symmetryCounterparts.Count() > 0) ? p.partInfo.title + " (x" + (p.symmetryCounterparts.Count() + 1) + ")" : p.partInfo.title;
                 if (GUILayout.Button(new GUIContent(partTitle, p.flightID.ToString())))
                 {
@@ -912,7 +977,7 @@ namespace PartCommanderContinued
             {
                 string multiEngineMode = getEngineMode(p);
                 optionsCount += showFields(p, symLock, multiEngineMode);
-                optionsCount += showEvents(p, symLock, multiEngineMode);
+                //optionsCount += showEvents(p, symLock, multiEngineMode);
                 if (showRes)
                 {
                     optionsCount += showResources(p);
@@ -933,14 +998,18 @@ namespace PartCommanderContinued
         private int showFields(Part p, bool symLock, string multiEngineMode)
         {
             int fieldCount = 0;
-            foreach (PartModule pm in p.Modules)
+            for (int pmi = 0; pmi < p.Modules.Count; pmi++)
+            //foreach (PartModule pm in p.Modules)
             {
+                PartModule pm = p.Modules[pmi];
                 if (pm.Fields != null)
                 {
                     if (checkEngineMode(multiEngineMode, pm))
                     {
-                        foreach (BaseField f in pm.Fields)
+                        for (int fi = 0; fi < pm.Fields.Count; fi++)
+                        //foreach (BaseField f in pm.Fields)
                         {
+                            BaseField f = pm.Fields[fi];
                             if (f.guiActive && f.guiName != "")
                             {
                                 fieldCount++;
@@ -984,7 +1053,7 @@ namespace PartCommanderContinued
             bool curVal = (bool)f.GetValue(f.host);
             string curText = curVal ? t.enabledText : t.disabledText;
 
-            if (GUILayout.Button(f.guiName + ": " + curText))
+            if (GUILayout.Button(f.guiName + ": " + Localizer.Format(curText)))
             {
                 curVal = !curVal;
                 setPartModuleFieldValue(p, symLock, pm, f, multiEngineMode, curVal);
@@ -997,16 +1066,25 @@ namespace PartCommanderContinued
             f.SetValue(curVal, f.host);
             if (symLock)
             {
-                foreach (Part symPart in p.symmetryCounterparts)
+                for (int spi = 0; spi < p.symmetryCounterparts.Count; spi++)
+                //foreach (Part symPart in p.symmetryCounterparts)
                 {
-                    foreach (PartModule symPM in symPart.Modules)
+                    Log.Info("for: 6, spi: " + spi);
+                    Part symPart = p.symmetryCounterparts[spi];
+
+                    for (int pmi = 0; pmi < symPart.Modules.Count; pmi++)
+                    //foreach (PartModule symPM in symPart.Modules)
                     {
+                        PartModule symPM = symPart.Modules[pmi];
+
                         if (symPM.GetType() == pm.GetType())
                         {
                             if (checkEngineMode(multiEngineMode, symPM))
                             {
-                                foreach (BaseField symF in symPM.Fields)
+                                for (int bfi = 0; bfi < symPM.Fields.Count; bfi++)
+                                //foreach (BaseField symF in symPM.Fields)
                                 {
+                                    BaseField symF = symPM.Fields[bfi];
                                     if (symF.guiActive && f.name == symF.name)
                                     {
                                         symF.SetValue(curVal, symF.host);
@@ -1023,14 +1101,19 @@ namespace PartCommanderContinued
         private int showEvents(Part p, bool symLock, string multiEngineMode)
         {
             int eventCount = 0;
-            foreach (PartModule pm in p.Modules)
+            for (int pmi = 0; pmi < p.Modules.Count; pmi++)
+            //foreach (PartModule pm in p.Modules)
             {
+                PartModule pm = p.Modules[pmi];
                 if (pm.Events != null)
                 {
                     if (checkEngineMode(multiEngineMode, pm))
                     {
+                        // For some reason, using the count (commented out) gets null events
+                        //for (int bei = 0; bei < pm.Events.Count; bei++)
                         foreach (BaseEvent e in pm.Events)
                         {
+                            //BaseEvent e = pm.Events[bei];
                             if (e.active && e.guiActive)
                             {
                                 eventCount++;
@@ -1050,9 +1133,9 @@ namespace PartCommanderContinued
             GUILayout.BeginHorizontal();
 
 
-            Color btnNrml = new Color(34f / 255f, 199f / 255f, 222f / 255f, 1);            
-            Texture2D BtnNrmlTex = new Texture2D(1, 1);            
-            BtnNrmlTex.SetPixel(0,0,btnNrml);
+            Color btnNrml = new Color(34f / 255f, 199f / 255f, 222f / 255f, 1);
+            Texture2D BtnNrmlTex = new Texture2D(1, 1);
+            BtnNrmlTex.SetPixel(0, 0, btnNrml);
             BtnNrmlTex.Apply();
 #if false
             Color btnHover = new Color(60f / 255f, 205f / 255f, 226f / 255f, 1);
@@ -1067,9 +1150,9 @@ namespace PartCommanderContinued
 #endif
 
 
-            Color oldColor = GUI.color;            
+            Color oldColor = GUI.color;
             GUI.color = btnNrml;
-            
+
 #if false
             bStyle.normal.background = BtnNrmlTex;
 
@@ -1087,16 +1170,24 @@ namespace PartCommanderContinued
                 e.Invoke();
                 if (symLock)
                 {
-                    foreach (Part symPart in p.symmetryCounterparts)
+                    for (int pi = 0; pi < p.symmetryCounterparts.Count; pi++)
+                    //foreach (Part symPart in p.symmetryCounterparts)
                     {
-                        foreach (PartModule symPM in symPart.Modules)
+                        Log.Info("for: 7, pi: " + pi);
+                        Part symPart = p.symmetryCounterparts[pi];
+
+                        for (int pmi = 0; pmi < symPart.Modules.Count; pmi++)
+                        //foreach (PartModule symPM in symPart.Modules)
                         {
+                            PartModule symPM = symPart.Modules[pmi];
                             if (symPM.GetType() == pm.GetType())
                             {
                                 if (checkEngineMode(multiEngineMode, symPM))
                                 {
-                                    foreach (BaseEvent symE in symPM.Events)
+                                    for (int bei = 0; bei < symPM.Events.Count; bei++)
+                                    //foreach (BaseEvent symE in symPM.Events)
                                     {
+                                        BaseEvent symE = symPM.Events[bei];
                                         if (symE.active && symE.guiActive && e.id == symE.id)
                                         {
                                             symE.Invoke();
@@ -1119,13 +1210,15 @@ namespace PartCommanderContinued
         private int showResources(Part p)
         {
             int resourceCount = 0;
-            foreach (PartResource pr in p.Resources)
+            for (int pri = 0; pri < p.Resources.Count; pri++)
+            //foreach (PartResource pr in p.Resources)
             {
+                PartResource pr = p.Resources[pri];
                 // if (pr.isActiveAndEnabled)
-//                {
-                    GUILayout.Label(pr.resourceName + ": " + string.Format("{0:N2}", Math.Round(pr.amount, 2)) + " / " + string.Format("{0:N2}", pr.maxAmount));
-                    resourceCount++;
-//                }
+                //                {
+                GUILayout.Label(pr.resourceName + ": " + string.Format("{0:N2}", Math.Round(pr.amount, 2)) + " / " + string.Format("{0:N2}", pr.maxAmount));
+                resourceCount++;
+                //                }
             }
             return resourceCount;
         }
@@ -1251,33 +1344,36 @@ namespace PartCommanderContinued
                 }
                 if (model != null)
 #endif
-//                {
+                //                {
 
-                    //  Highlighter h = model.gameObject.GetComponent<Highlighter>();
-                    // if (h != null)
+                //  Highlighter h = model.gameObject.GetComponent<Highlighter>();
+                // if (h != null)
+                {
+                    if (highlight)
                     {
-                        if (highlight)
+                        p.highlighter.ConstantOn(XKCDColors.Orange);
+                        if (!highlightedParts.Exists(x => x == p))
                         {
-                            p.highlighter.ConstantOn(XKCDColors.Orange);
-                            if (!highlightedParts.Exists(x => x == p))
-                            {
-                                highlightedParts.Add(p);
-                            }
+                            highlightedParts.Add(p);
                         }
-                        else
+                    }
+                    else
+                    {
+                        p.highlighter.ConstantOff();
+                        if (highlightedParts.Exists(x => x == p))
                         {
-                            p.highlighter.ConstantOff();
-                            if (highlightedParts.Exists(x => x == p))
-                            {
 
-                                if (clear) highlightedParts.Remove(p);
-                            }
+                            if (clear) highlightedParts.Remove(p);
                         }
+                    }
 
-                        if (symLock)
+                    if (symLock)
+                    {
+                        for (int pi = 0; pi < p.symmetryCounterparts.Count; pi++)
+                        //foreach (Part symPart in p.symmetryCounterparts)
                         {
-                            foreach (Part symPart in p.symmetryCounterparts)
-                            {
+                            Log.Info("for: 8, pi: " + pi);
+                            Part symPart = p.symmetryCounterparts[pi];
 #if false
                                 Transform symModel = null;
                                 try
@@ -1290,35 +1386,35 @@ namespace PartCommanderContinued
                                 }
                                 if (symModel != null)
 #endif
+                            {
+                                //Highlighter symH = symModel.gameObject.GetComponent<Highlighter>();
+                                //if (symH != null)
                                 {
-                                    //Highlighter symH = symModel.gameObject.GetComponent<Highlighter>();
-                                    //if (symH != null)
+                                    if (highlight)
                                     {
-                                        if (highlight)
+                                        // Highlight the secondary symmetrical parts in a different colour
+                                        symPart.highlighter.ConstantOn(XKCDColors.Yellow);
+                                        if (!highlightedParts.Exists(x => x == symPart))
                                         {
-                                            // Highlight the secondary symmetrical parts in a different colour
-                                            symPart.highlighter.ConstantOn(XKCDColors.Yellow);
-                                            if (!highlightedParts.Exists(x => x == symPart))
-                                            {
 
-                                                highlightedParts.Add(symPart);
-                                            }
+                                            highlightedParts.Add(symPart);
                                         }
-                                        else
+                                    }
+                                    else
+                                    {
+                                        symPart.highlighter.ConstantOff();
+                                        if (highlightedParts.Exists(x => x == symPart))
                                         {
-                                            symPart.highlighter.ConstantOff();
-                                            if (highlightedParts.Exists(x => x == symPart))
-                                            {
 
-                                                if (clear) highlightedParts.Remove(symPart);
-                                            }
+                                            if (clear) highlightedParts.Remove(symPart);
                                         }
                                     }
                                 }
                             }
                         }
                     }
-//                }
+                }
+                //                }
             }
 #if false
             else
@@ -1373,9 +1469,11 @@ namespace PartCommanderContinued
 
         private void clearHighlighting(List<Part> ap)
         {
-            foreach (Part p in ap)
+            for (int pi = 0; pi < ap.Count; pi++)
+            //foreach (Part p in ap)
             {
-                setHighlighting(p, true, false, false);
+                Log.Info("for: 9, pi: " + pi);
+                setHighlighting(ap[pi], true, false, false);
             }
         }
 

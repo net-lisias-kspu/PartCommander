@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+using ClickThroughFix;
+
+
 namespace PartCommanderContinued
 {
     internal class SettingsWindow
@@ -31,7 +34,7 @@ namespace PartCommanderContinued
         {
             if (showWindow)
             {
-                windowRect = GUILayout.Window(windowId, windowRect, drawWindow, "");
+                windowRect = ClickThruBlocker.GUILayoutWindow(windowId, windowRect, drawWindow, "");
             }
         }
 
@@ -114,7 +117,7 @@ namespace PartCommanderContinued
             {
                 resizingWindow = true;
             }
-            GUI.DragWindow(dragRect);
+            GUI.DragWindow();
 
         }
 

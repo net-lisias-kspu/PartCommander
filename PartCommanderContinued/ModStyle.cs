@@ -44,6 +44,7 @@ namespace PartCommanderContinued
             blackBackground.SetPixel(0, 0, Color.black);
             blackBackground.Apply();
 
+            Log.Info("Before first call to GetToggleButtonStyle");
             guiStyles["resizeButton"] = GetToggleButtonStyle("resize", 20, 20, true);
             guiStyles["symLockButton"] = GetToggleButtonStyle("symlock", 20, 20, false);
             guiStyles["azButton"] = GetToggleButtonStyle("az", 20, 20, false);
@@ -84,17 +85,30 @@ namespace PartCommanderContinued
             guiStyles["tooltip"].normal.background = blackBackground;
 
         }
+        private WWW _imagetex;
 
         public Texture2D GetImage(String path, int width, int height)
         {
-            Texture2D img = new Texture2D(width, height, TextureFormat.ARGB32, false);
-            img = GameDatabase.Instance.GetTexture(path, false);
+            Log.Info("GetImage, path: " + path);
+            // Due to the image dimensions, they aren't loaded in to the KSP database properly, 
+            // the code below now does that directly
+
+            //Texture2D img = new Texture2D(width, height, TextureFormat.ARGB32, false);
+            //img = GameDatabase.Instance.GetTexture(path, false);
+            
+            
+            Log.Info("Loading image manually");
+            _imagetex = new WWW(KSPUtil.ApplicationRootPath.Replace("\\", "/") +  "/GameData/" + path + ".png");
+            Texture2D img = _imagetex.texture;
+            _imagetex.Dispose();
+            
             return img;
         }
 
         public GUIStyle GetToggleButtonStyle(string styleName, int width, int height, bool hover)
         {
             GUIStyle myStyle = new GUIStyle();
+            Log.Info("GetToggleButtonStyle, styleName: " + styleName);
             Texture2D styleOff = GetImage("PartCommanderContinued/textures/" + styleName + "_off", width, height);
             Texture2D styleOn = GetImage("PartCommanderContinued/textures/" + styleName + "_on", width, height);
 

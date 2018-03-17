@@ -73,6 +73,8 @@ namespace PartCommanderContinued
 
                     }
                 }
+                PartCommander.Instance.toolbarControl.SetTrue();
+#if false
                 if (PartCommander.Instance.launcherButton != null)
                 {
                     if (visibleWindow)
@@ -95,6 +97,7 @@ namespace PartCommanderContinued
                         PartCommander.Instance.hideWindow();
                     }
                 }
+#endif
             }
             else
             {
