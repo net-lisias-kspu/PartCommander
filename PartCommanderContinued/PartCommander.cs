@@ -982,7 +982,7 @@ namespace PartCommanderContinued
             {
                 string multiEngineMode = getEngineMode(p);
                 optionsCount += showFields(p, symLock, multiEngineMode);
-                //optionsCount += showEvents(p, symLock, multiEngineMode);
+                optionsCount += showEvents(p, symLock, multiEngineMode);
                 if (showRes)
                 {
                     optionsCount += showResources(p);
