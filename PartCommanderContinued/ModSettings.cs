@@ -32,6 +32,8 @@ namespace PartCommanderContinued
                 windowDefaultRect = new Rect(windowDefaultX, windowDefaultY, windowDefaultWidth, windowDefaultHeight);
                 visibleWindow = SettingsNode.GetValueOrDefault("visibleWindow", visibleWindow);
 
+  
+
                 if (SettingsNode.HasNode("Vessels"))
                 {
                     foreach (ConfigNode vesselNode in SettingsNode.GetNode("Vessels").nodes)
@@ -73,7 +75,7 @@ namespace PartCommanderContinued
 
                     }
                 }
-                PartCommander.Instance.toolbarControl.SetTrue();
+                
 #if false
                 if (PartCommander.Instance.launcherButton != null)
                 {

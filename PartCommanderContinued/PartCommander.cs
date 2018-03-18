@@ -154,8 +154,7 @@ namespace PartCommanderContinued
 
         public void Update()
         {
-            if (toolbarControl != null)
-                toolbarControl.UseBlizzy(!settings.useStockToolbar);
+
 
 #if false
             // Load Application Launcher
@@ -201,7 +200,6 @@ namespace PartCommanderContinued
                     //foreach (Part p in FlightGlobals.ActiveVessel.Parts)
                     {
                         Part p = FlightGlobals.ActiveVessel.Parts[pi];
-                        Log.Info("for: 1, pi: " + pi);
                         if (p.flightID == currentWindow.currentPartId)
                         {
                             currentWindow.currentPart = p;
@@ -225,7 +223,6 @@ namespace PartCommanderContinued
                         for (int pi = 0; pi < FlightGlobals.ActiveVessel.Parts.Count; pi++)
                         //foreach (Part p in FlightGlobals.ActiveVessel.Parts)
                         {
-                            Log.Info("for: 2, pi: " + pi);
                             Part p = FlightGlobals.ActiveVessel.Parts[pi];
                             if (p.flightID == pow.currentPartId)
                             {
@@ -374,6 +371,13 @@ namespace PartCommanderContinued
 
         public void OnGUI()
         {
+            if (toolbarControl != null)
+                toolbarControl.UseBlizzy(!settings.useStockToolbar);
+            if (PCScenario.Instance.gameSettings.visibleWindow)
+                toolbarControl.SetTrue(false);
+            
+
+
             // Make sure we have something to show
             if (visibleUI && FlightGlobals.ActiveVessel != null && currentWindow != null && PCScenario.Instance != null && PCScenario.Instance.gameSettings.visibleWindow)
             {
@@ -451,7 +455,9 @@ namespace PartCommanderContinued
                 "PartCommanderContinued/textures/blizzyToolbar",
                 "Part Commander"
             );
-            toolbarControl.UseBlizzy(!settings.useStockToolbar);
+            if (settings != null)
+                toolbarControl.UseBlizzy(!settings.useStockToolbar);
+
         }
 
         public void removeLauncherButtons()
@@ -941,7 +947,6 @@ namespace PartCommanderContinued
             for (int pi = 0; pi < activeParts.Count; pi++)
             //foreach (Part p in activeParts)
             {
-                Log.Info("for: 5, pi: " + pi);
                 Part p = activeParts[pi];
 
                 string partTitle = (currentWindow.symLock && p.symmetryCounterparts.Count() > 0) ? p.partInfo.title + " (x" + (p.symmetryCounterparts.Count() + 1) + ")" : p.partInfo.title;
@@ -1069,7 +1074,6 @@ namespace PartCommanderContinued
                 for (int spi = 0; spi < p.symmetryCounterparts.Count; spi++)
                 //foreach (Part symPart in p.symmetryCounterparts)
                 {
-                    Log.Info("for: 6, spi: " + spi);
                     Part symPart = p.symmetryCounterparts[spi];
 
                     for (int pmi = 0; pmi < symPart.Modules.Count; pmi++)
@@ -1173,7 +1177,6 @@ namespace PartCommanderContinued
                     for (int pi = 0; pi < p.symmetryCounterparts.Count; pi++)
                     //foreach (Part symPart in p.symmetryCounterparts)
                     {
-                        Log.Info("for: 7, pi: " + pi);
                         Part symPart = p.symmetryCounterparts[pi];
 
                         for (int pmi = 0; pmi < symPart.Modules.Count; pmi++)
@@ -1372,7 +1375,6 @@ namespace PartCommanderContinued
                         for (int pi = 0; pi < p.symmetryCounterparts.Count; pi++)
                         //foreach (Part symPart in p.symmetryCounterparts)
                         {
-                            Log.Info("for: 8, pi: " + pi);
                             Part symPart = p.symmetryCounterparts[pi];
 #if false
                                 Transform symModel = null;
@@ -1472,7 +1474,6 @@ namespace PartCommanderContinued
             for (int pi = 0; pi < ap.Count; pi++)
             //foreach (Part p in ap)
             {
-                Log.Info("for: 9, pi: " + pi);
                 setHighlighting(ap[pi], true, false, false);
             }
         }

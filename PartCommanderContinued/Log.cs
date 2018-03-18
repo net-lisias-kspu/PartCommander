@@ -17,7 +17,7 @@ namespace PartCommanderContinued
             DETAIL = 4,
             TRACE = 5
         };
-        private static string TITLE = "";
+        private static string TITLE = "PartCommander";
         public static LEVEL level = LEVEL.INFO;
 
         private static String PREFIX = TITLE + ": ";
