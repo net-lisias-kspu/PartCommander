@@ -27,7 +27,7 @@
 1:PartCommanderContinued, PartCommanderContinued.version, PartCommander
 
 # 2:PROJNAME, PROJFILE, VERSIONFILE, PLUGINSFOLDER
-2:PartCommanderContinued,PartCommanderContinued/PartCommanderContinued.csproj,PartCommanderContinued.version,GameData/PartCommander/Plugins
+2:PartCommanderContinued,PartCommanderContinued/PartCommanderContinued.csproj,PartCommanderContinued.version,GameData/PartCommanderContinued/Plugins
 
 # 3:SOURCEFILE, DESTDIR
 3:PartCommanderContinued.version,GameData/PartCommanderContinued
