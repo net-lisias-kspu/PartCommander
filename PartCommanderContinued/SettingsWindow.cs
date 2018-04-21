@@ -61,14 +61,6 @@ namespace PartCommanderContinued
 
             GUILayout.Space(5f);
 
-            bool newUseStockToolbar = GUILayout.Toggle(settings.useStockToolbar, "Use stock toolbar");
-            if (newUseStockToolbar != settings.useStockToolbar)
-            {
-                settings.useStockToolbar = newUseStockToolbar;
-                settings.Save();
-            }
-
-            GUILayout.Space(5f);
 
             bool newEnableHotKey = GUILayout.Toggle(settings.enableHotKey, "Enable hot key");
             if (newEnableHotKey != settings.enableHotKey)

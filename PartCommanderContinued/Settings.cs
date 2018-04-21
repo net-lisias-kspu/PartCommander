@@ -12,9 +12,6 @@ namespace PartCommanderContinued
         internal Settings(String FilePath) : base(FilePath) { }
 
         [Persistent]
-        internal bool useStockToolbar = true;
-
-        [Persistent]
         internal bool enableHotKey = true;
 
         [Persistent]

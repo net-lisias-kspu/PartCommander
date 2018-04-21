@@ -35,10 +35,6 @@ namespace PartCommanderContinued
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class PartCommander : MonoBehaviour
     {
-#if false
-        internal ApplicationLauncherButton launcherButton = null;
-        internal IButton blizzyButton = null;
-#endif
         internal ToolbarControl toolbarControl = null;
 
         private List<Part> activeParts = new List<Part>();
@@ -84,12 +80,7 @@ namespace PartCommanderContinued
             modStyle = new ModStyle();
 
             // Hook into events for Application Launcher
-#if false
-            if (settings.useStockToolbar)
-            {
-                GameEvents.onGUIApplicationLauncherReady.Add(OnGUIApplicationLauncherReady);
-            }
-#endif
+
             GameEvents.onGameSceneLoadRequested.Add(onSceneChange);
 
         }
@@ -118,34 +109,6 @@ namespace PartCommanderContinued
             settingsWindow = new SettingsWindow(modStyle, settings);
 
         }
-#if false
-        private void addLauncherButtons()
-        {
-            // Load Blizzy toolbar
-            if (blizzyButton == null)
-            {
-                if (ToolbarManager.ToolbarAvailable)
-                {
-                    // Create button
-                    blizzyButton = ToolbarManager.Instance.add("PartCommanderContinued", "blizzyButton");
-                    blizzyButton.TexturePath = "PartCommanderContinued/textures/blizzyToolbar";
-                    blizzyButton.ToolTip = "Part Commander";
-                    blizzyButton.OnClick += (e) => toggleWindow();
-                }
-                else
-                {
-                    // Blizzy Toolbar not available, fall back to stock launcher
-                    settings.useStockToolbar = true;
-                }
-            }
-
-            // Load Application Launcher
-            if (launcherButton == null && settings.useStockToolbar)
-            {
-                OnGUIApplicationLauncherReady();
-            }
-        }
-#endif
 
         public void triggerUpdateParts(Vessel v)
         {
@@ -154,26 +117,6 @@ namespace PartCommanderContinued
 
         public void Update()
         {
-
-
-#if false
-            // Load Application Launcher
-            if (launcherButton == null && settings.useStockToolbar)
-            {
-                OnGUIApplicationLauncherReady();
-                if (PCScenario.Instance.gameSettings.visibleWindow)
-                {
-                    launcherButton.SetTrue();
-                }
-            }
-
-
-            // Destroy application launcher
-            if (launcherButton != null && settings.useStockToolbar == false)
-            {
-                removeApplicationLauncher();
-            }
-#endif
             // Detect hotkey
             if (settings.enableHotKey && Input.GetKeyDown(settings.hotKey))
             {
@@ -371,8 +314,6 @@ namespace PartCommanderContinued
 
         public void OnGUI()
         {
-            if (toolbarControl != null)
-                toolbarControl.UseBlizzy(!settings.useStockToolbar);
             if (PCScenario.Instance.gameSettings.visibleWindow)
                 toolbarControl.SetTrue(false);
             
@@ -428,20 +369,10 @@ namespace PartCommanderContinued
         }
 
         // ------------------------------------------ Application Launcher / UI ---------------------------------------
-#if false
-        private void OnGUIApplicationLauncherReady()
-        {
-            if (launcherButton == null && settings.useStockToolbar)
-            {
-                launcherButton = ApplicationLauncher.Instance.AddModApplication(
-                    showWindow, 
-                    hideWindow, 
-                    null, null, null, null, 
-                    ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
-                    modStyle.GetImage("PartCommanderContinued/textures/toolbar", 38, 38));
-            }
-        }
-#endif
+
+        internal const string MODID = "PartCommander_NS";
+        internal const string MODNAME = "Part Commander";
+
         void AddLauncherButtons()
         {
             toolbarControl = gameObject.AddComponent<ToolbarControl>();
@@ -449,39 +380,19 @@ namespace PartCommanderContinued
                     showWindow,
                     hideWindow,
                  ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
-                "PartCommander_NS",
+                MODID,
                 "partCommanderButton",
                 "PartCommanderContinued/textures/toolbar",
                 "PartCommanderContinued/textures/blizzyToolbar",
-                "Part Commander"
+                MODNAME
             );
-            if (settings != null)
-                toolbarControl.UseBlizzy(!settings.useStockToolbar);
-
         }
 
         public void removeLauncherButtons()
         {
-#if false
-            if (launcherButton != null)
-            {
-                removeApplicationLauncher();
-            }
-            if (blizzyButton != null)
-            {
-                blizzyButton.Destroy();
-            }
-#endif
             toolbarControl.OnDestroy();
             Destroy(toolbarControl);
         }
-#if false
-        private void removeApplicationLauncher()
-        {
-            GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIApplicationLauncherReady);
-            ApplicationLauncher.Instance.RemoveModApplication(launcherButton);
-        }
-#endif
 
         public void showUI() // triggered on F2
         {
@@ -512,30 +423,6 @@ namespace PartCommanderContinued
         public void toggleWindow()
         {
             PartCommander.Instance.toolbarControl.SetFalse();
-#if false
-            if (launcherButton != null)
-            {
-                if (PCScenario.Instance.gameSettings.visibleWindow)
-                {
-                    launcherButton.SetFalse();
-                }
-                else
-                {
-                    launcherButton.SetTrue();
-                }
-            }
-            else
-            {
-                if (PCScenario.Instance.gameSettings.visibleWindow)
-                {
-                    hideWindow();
-                }
-                else
-                {
-                    showWindow();
-                }
-            }
-#endif
         }
 
         private void resizeWindows()
@@ -1118,7 +1005,7 @@ namespace PartCommanderContinued
                         foreach (BaseEvent e in pm.Events)
                         {
                             //BaseEvent e = pm.Events[bei];
-                            if (e.active && e.guiActive)
+                            if (e != null && e.active && e.guiActive)
                             {
                                 eventCount++;
                                 showEvent(p, symLock, pm, e, multiEngineMode);
@@ -1170,27 +1057,55 @@ namespace PartCommanderContinued
 
 #endif
             if (GUILayout.Button("", bStyle, GUILayout.Width(50), GUILayout.Height(15)))
-            {
-                e.Invoke();
+            {               
                 if (symLock)
                 {
-                    for (int pi = 0; pi < p.symmetryCounterparts.Count; pi++)
+                    for (int i = 0; i < FlightGlobals.ActiveVessel.Parts.Count; i++)
+                    {
+                        Part symPart = FlightGlobals.ActiveVessel.Parts[i];
+                        if (FlightGlobals.ActiveVessel.Parts[i].isSymmetryCounterPart(p))
+                        {
+
+                            for (int pmi = 0; pmi < symPart.Modules.Count; pmi++)
+                            {
+
+                                PartModule symPM = symPart.Modules[pmi];
+                                if (symPM.GetType() == pm.GetType())
+                                {
+                                    if (checkEngineMode(multiEngineMode, symPM))
+                                    {
+                                        foreach (BaseEvent symE in symPM.Events)
+                                        {
+                                            if (symE != null && symE.active && symE.guiActive && e.id == symE.id)
+                                            {
+                                                symE.Invoke();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                e.Invoke();
+#if false
+
+                    for (int pi = 0; pi < p.symmetryCounterparts.Count; pi++)                    
                     //foreach (Part symPart in p.symmetryCounterparts)
                     {
                         Part symPart = p.symmetryCounterparts[pi];
-
                         for (int pmi = 0; pmi < symPart.Modules.Count; pmi++)
-                        //foreach (PartModule symPM in symPart.Modules)
                         {
+
                             PartModule symPM = symPart.Modules[pmi];
                             if (symPM.GetType() == pm.GetType())
                             {
                                 if (checkEngineMode(multiEngineMode, symPM))
                                 {
-                                    for (int bei = 0; bei < symPM.Events.Count; bei++)
-                                    //foreach (BaseEvent symE in symPM.Events)
+                                    foreach (BaseEvent symE in symPM.Events)
                                     {
-                                        BaseEvent symE = symPM.Events[bei];
+                                        // exception occurs here
+
                                         if (symE.active && symE.guiActive && e.id == symE.id)
                                         {
                                             symE.Invoke();
@@ -1201,6 +1116,9 @@ namespace PartCommanderContinued
                         }
                     }
                 }
+                e.Invoke();
+#endif
+
             }
             //  GUI.skin = HighLogic.Skin;
             GUI.color = oldColor;

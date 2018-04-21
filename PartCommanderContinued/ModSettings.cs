@@ -74,32 +74,7 @@ namespace PartCommanderContinued
                         }
 
                     }
-                }
-                
-#if false
-                if (PartCommander.Instance.launcherButton != null)
-                {
-                    if (visibleWindow)
-                    {
-                        PartCommander.Instance.launcherButton.SetTrue();
-                    }
-                    else
-                    {
-                        PartCommander.Instance.launcherButton.SetFalse();
-                    }
-                }
-                else
-                {
-                    if (visibleWindow)
-                    {
-                        PartCommander.Instance.showWindow();
-                    }
-                    else
-                    {
-                        PartCommander.Instance.hideWindow();
-                    }
-                }
-#endif
+                }                
             }
             else
             {
