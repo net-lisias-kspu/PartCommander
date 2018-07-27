@@ -1,5 +1,8 @@
 ChangeLog for PartCommanderContinued
 
+1.1.4.1
+	Updated .version file for all 1.4.x
+
 1.1.4
 	Fixed nullrefs when doing symmetry parts
 	Added toolbar registration
