@@ -20,5 +20,10 @@ namespace PartCommanderContinued
         [Persistent]
         internal bool hideUnAct = false;
 
+        [Persistent]
+        internal bool altSkin = false;
+
+        [Persistent]
+        internal int fontSize = 12;
     }
 }

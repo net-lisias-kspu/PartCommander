@@ -58,11 +58,11 @@ namespace PartCommanderContinued
 
         private bool popOut = false;
 
-        private ModStyle modStyle;
+        internal ModStyle modStyle, modStyleKSP, modStyleUnity;
 
         internal string showTooltip = "";
 
-        Settings settings = new Settings("../PluginData/PartCommanderContinued.cfg");
+        internal Settings settings = new Settings("../PluginData/PartCommanderContinued.cfg");
 
         public static PartCommander Instance { get; private set; }
         public PartCommander()
@@ -77,7 +77,7 @@ namespace PartCommanderContinued
             settings.Load();
             settings.Save();
 
-            modStyle = new ModStyle();
+            //modStyle = new ModStyle();
 
             // Hook into events for Application Launcher
 
@@ -106,7 +106,7 @@ namespace PartCommanderContinued
             partCats.Insert(0, PartCategories.none);
 
             // Create settings window
-            settingsWindow = new SettingsWindow(modStyle, settings);
+            //settingsWindow = new SettingsWindow(modStyle, settings);
 
         }
 
@@ -314,6 +314,22 @@ namespace PartCommanderContinued
 
         public void OnGUI()
         {
+            if (modStyle == null)
+            {
+                modStyleKSP = new ModStyle(false);
+                modStyleUnity = new ModStyle(true);
+                if (PartCommander.Instance.settings.altSkin)
+                {
+                    settingsWindow = new SettingsWindow(modStyleUnity, settings);
+                    modStyle = modStyleUnity;
+                }
+                else
+                {
+                    settingsWindow = new SettingsWindow(modStyleKSP, settings);
+                    modStyle = modStyleKSP;
+                }
+            }
+
             if (PCScenario.Instance.gameSettings.visibleWindow)
                 toolbarControl.SetTrue(false);
             
@@ -322,7 +338,12 @@ namespace PartCommanderContinued
             // Make sure we have something to show
             if (visibleUI && FlightGlobals.ActiveVessel != null && currentWindow != null && PCScenario.Instance != null && PCScenario.Instance.gameSettings.visibleWindow)
             {
-                GUI.skin = modStyle.skin;
+#if false
+                if (PartCommander.Instance.settings.altSkin)
+                    GUI.skin = modStyleUnity.skin;
+                else
+#endif
+                    GUI.skin = modStyle.skin;
                 currentWindow.windowRect = ClickThruBlocker.GUILayoutWindow(currentWindow.windowId, currentWindow.windowRect, mainWindow, "");
                 // Set the default location/size for new windows to be the same as this one
                 PCScenario.Instance.gameSettings.windowDefaultRect = currentWindow.windowRect;
@@ -561,6 +582,7 @@ namespace PartCommanderContinued
             if (w.popOutWindow)
             {
                 string partTitle = (w.symLock && w.currentPart.symmetryCounterparts.Count() > 0) ? w.currentPart.partInfo.title + " (x" + (w.currentPart.symmetryCounterparts.Count() + 1) + ")" : w.currentPart.partInfo.title;
+
                 GUILayout.Label(partTitle, modStyle.guiStyles["titleLabel"]);
             }
             else

@@ -40,7 +40,14 @@ namespace PartCommanderContinued
 
         internal void drawWindow(int id)
         {
-            GUI.skin = modStyle.skin;
+            if (PartCommander.Instance.settings.altSkin)
+            {
+                GUI.skin = PartCommander.Instance.modStyleUnity.skin;
+            }
+            else
+            {
+                GUI.skin = PartCommander.Instance.modStyle.skin;
+            }
             GUILayout.BeginVertical();
             GUILayout.Label("Settings", modStyle.guiStyles["titleLabel"]);
             GUILayout.EndVertical();
@@ -51,7 +58,8 @@ namespace PartCommanderContinued
             GUILayout.BeginVertical();
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            bool newHideUnAct = GUILayout.Toggle(settings.hideUnAct, "Hide unactionable parts");
+            GUILayout.BeginHorizontal();
+            bool newHideUnAct = GUILayout.Toggle(settings.hideUnAct, "Hide unactionable parts", modStyle.guiStyles["toggleText"]);
             if (newHideUnAct != settings.hideUnAct)
             {
                 PartCommander.Instance.updateParts = true;
@@ -59,22 +67,77 @@ namespace PartCommanderContinued
                 settings.Save();
             }
 
+            GUILayout.EndHorizontal();
             GUILayout.Space(5f);
+            GUILayout.BeginHorizontal();
 
+            GUILayout.Label("Font Size:", modStyle.guiStyles["settingsLabel"]);
+            bool fontChanged = false;
+            GUILayout.FlexibleSpace();
+            if (settings.fontSize <= 12)
+                GUI.enabled = false;
+            if (GUILayout.Button("<", modStyle.guiStyles["settingsButton"]))
+            {
+                settings.fontSize--;
+                fontChanged = true;
+            }
+            GUI.enabled = true;
+            string s = GUILayout.TextField(settings.fontSize.ToString(), modStyle.guiStyles["settingsLabel"]);
+            if (settings.fontSize >= 20)
+                GUI.enabled = false;
+            if (GUILayout.Button(">", modStyle.guiStyles["settingsButton"]))
+            {
+                settings.fontSize++;
+                fontChanged = true;
+            }
+            GUI.enabled = true;
+            if (fontChanged)
+            {
+                settings.Save();
+                PartCommander.Instance.modStyle.UpdateFontSize(settings.fontSize);
+                PartCommander.Instance.modStyleUnity.UpdateFontSize(settings.fontSize);
 
-            bool newEnableHotKey = GUILayout.Toggle(settings.enableHotKey, "Enable hot key");
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.Space(5f);
+            GUILayout.BeginHorizontal();
+
+            bool newAltSkin = GUILayout.Toggle(settings.altSkin, "Use alternate skin", modStyle.guiStyles["toggleText"]);
+            if (newAltSkin != settings.altSkin)
+            {
+                settings.altSkin = newAltSkin;
+                settings.Save();
+                if (PartCommander.Instance.settings.altSkin)
+                {
+                    modStyle = PartCommander.Instance.modStyleUnity;
+                    PartCommander.Instance.modStyle = PartCommander.Instance.modStyleUnity;
+
+                }
+                else
+                {
+                    modStyle = PartCommander.Instance.modStyleKSP;
+                    PartCommander.Instance.modStyle = PartCommander.Instance.modStyle;
+                }
+            }
+
+            GUILayout.EndHorizontal();
+            GUILayout.Space(5f);
+            GUILayout.BeginHorizontal();
+
+            bool newEnableHotKey = GUILayout.Toggle(settings.enableHotKey, "Enable hot key", modStyle.guiStyles["toggleText"]);
             if (newEnableHotKey != settings.enableHotKey)
             {
                 settings.enableHotKey = newEnableHotKey;
                 settings.Save();
             }
 
+            GUILayout.EndHorizontal();
             GUILayout.Space(5f);
-            
+            GUILayout.BeginHorizontal();
 
             if (settingHotKey)
             {
-                GUILayout.Label("Type a new hot key...");
+                GUILayout.Label("Type a new hot key...", modStyle.guiStyles["settingsLabel"]);
                 if (Event.current.isKey)
                 {
                     settings.hotKey = Event.current.keyCode;
@@ -88,14 +151,14 @@ namespace PartCommanderContinued
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Mod + ");
-                    if (GUILayout.Button(new GUIContent(settings.hotKey.ToString(), "Click to set new hot key")))
+                    if (GUILayout.Button(new GUIContent(settings.hotKey.ToString(), "Click to set new hot key"), modStyle.guiStyles["settingsButton"]))
                     {
                         settingHotKey = true;
                     }
                     GUILayout.EndHorizontal();
                 }
             }
-
+            GUILayout.EndHorizontal();
             GUILayout.EndScrollView();
             GUILayout.Space(25f);
             GUILayout.EndVertical();

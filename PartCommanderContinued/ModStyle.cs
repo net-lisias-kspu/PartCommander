@@ -13,15 +13,22 @@ namespace PartCommanderContinued
     {
         public GUISkin skin;
         public Dictionary<string, GUIStyle> guiStyles;
-        public int fontSize = 12;
+        public int fontSize = PartCommander.Instance.settings.fontSize; // 12;
         public int minWidth = 110;
         public int minHeight = 100;
 
-        public ModStyle()
+        public ModStyle(bool unity)
         {
             guiStyles = new Dictionary<string, GUIStyle>();
 
-            skin = GameObject.Instantiate(HighLogic.Skin) as GUISkin;
+            if (unity)
+            {
+                skin = GameObject.Instantiate(GUI.skin) as GUISkin;
+            }
+            else
+            {
+                skin = GameObject.Instantiate(HighLogic.Skin) as GUISkin;
+            }
 
             skin.button.padding = new RectOffset() { left = 3, right = 3, top = 3, bottom = 3 };
             skin.button.wordWrap = true;
@@ -84,7 +91,45 @@ namespace PartCommanderContinued
             guiStyles["tooltip"].normal.textColor = Color.yellow;
             guiStyles["tooltip"].normal.background = blackBackground;
 
+            guiStyles["toggleText"] = new GUIStyle(GUI.skin.toggle);
+            guiStyles["toggleText"].name = "toggleText";
+            guiStyles["toggleText"].fontSize = fontSize + 2;
+            guiStyles["toggleText"].wordWrap = true;
+            guiStyles["toggleText"].alignment = TextAnchor.MiddleCenter;
+            //guiStyles["toggleText"].normal.textColor = Color.yellow;
+            //guiStyles["toggleText"].normal.background = blackBackground;
+
+            guiStyles["settingsButton"] = new GUIStyle(GUI.skin.button);
+            guiStyles["settingsButton"].name = "settingsButton";
+            guiStyles["settingsButton"].fontSize = fontSize + 2;
+            guiStyles["settingsButton"].wordWrap = true;
+            guiStyles["settingsButton"].alignment = TextAnchor.MiddleCenter;
+            //guiStyles["settingsButton"].normal.textColor = Color.yellow;
+            //guiStyles["toggleText"].normal.background = blackBackground;
+
+            guiStyles["settingsLabel"] = new GUIStyle(GUI.skin.label);
+            guiStyles["settingsLabel"].name = "settingsLabel";
+            guiStyles["settingsLabel"].fontSize = fontSize + 2;
+            guiStyles["settingsLabel"].fontStyle = FontStyle.Bold;
+            guiStyles["settingsLabel"].alignment = TextAnchor.MiddleCenter;
+            guiStyles["settingsLabel"].wordWrap = true;
+            //guiStyles["settingsLabel"].normal.textColor = Color.yellow;
         }
+
+        public void UpdateFontSize(int newFontSize)
+        {
+            fontSize = newFontSize;
+            skin.button.fontSize = fontSize;
+            skin.label.fontSize = fontSize;
+            skin.window.fontSize = (fontSize + 2);
+            guiStyles["titleLabel"].fontSize = fontSize + 3;
+            guiStyles["categoryLabel"].fontSize = fontSize + 1;
+            guiStyles["tooltip"].fontSize = fontSize + 3;
+            guiStyles["toggleText"].fontSize = (fontSize + 2);
+            guiStyles["settingsLabel"].fontSize = fontSize + 2;
+            guiStyles["settingsButton"].fontSize = fontSize + 2;
+        }
+
         private WWW _imagetex;
 
         public Texture2D GetImage(String path, int width, int height)
