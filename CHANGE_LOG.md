@@ -1,5 +1,7 @@
 # Part Commander :: Change Log
 
+* 2016-1016: 0.1.0 (linuxgurugamer) for KSP 1.2
+	+ No changelog provided
 * 2016-0507: 1.1.1 (seanmcdougall) for KSP 1.1.2
 	+ recompiled for KSP 1.1.2
 * 2016-0427: 1.1 (seanmcdougall) for KSP 1.1
