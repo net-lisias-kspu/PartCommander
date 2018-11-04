@@ -1,5 +1,7 @@
 # Part Commander :: Change Log
 
+* 2015-0709: 1.0.2.2 (seanmcdougall) for KSP 1.1
+	+ another hotfix to correct an issue with settings not being saved properly to the persistent config file
 * 2015-0709: 1.0.2.1 (seanmcdougall) for KSP 1.1
 	+ hotfix to correct an issue where the part list wouldn't always update when parts were destroyed
 * 2015-0709: 1.0.2 (seanmcdougall) for KSP 1.1
