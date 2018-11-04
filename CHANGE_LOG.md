@@ -1,5 +1,9 @@
 # Part Commander :: Change Log
 
+* 2018-0318: 1.1.3.1 (linuxgurugamer) for KSP 1.4.1
+	+ Fixed unresponsive button when window is opened by config
+	+ Fixed nullref at startup
+	+ Removed debugging statement
 * 2018-0317: 1.1.3 (linuxgurugamer) for KSP 1.4.1
 	+ Fixed localization strings being displayed in fields
 	+ Added support for the ClickThroughBlocker
