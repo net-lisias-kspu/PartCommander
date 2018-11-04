@@ -1,5 +1,7 @@
 # Part Commander :: Change Log
 
+* 2015-0731: 1.0.2.4 (seanmcdougall) for KSP 1.1
+	+ fixes a NRE that was showing up in the logs
 * 2015-0719: 1.0.2.3 (seanmcdougall) for KSP 1.1
 	+ bug fixes to hover logic and part highlighting
 * 2015-0709: 1.0.2.2 (seanmcdougall) for KSP 1.1
