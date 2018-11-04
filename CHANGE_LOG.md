@@ -1,5 +1,7 @@
 # Part Commander :: Change Log
 
+* 2016-1102: 0.1.1.1 (linuxgurugamer) for KSP 1.2.2
+	+ No changelog provided
 * 2016-1021: 0.1.1 (linuxgurugamer) for KSP 1.2
 	+ Update per blizzy78/ksp_toolbar#39 to prevent NotSupportedException. …
 * 2016-1016: 0.1.0 (linuxgurugamer) for KSP 1.2
