@@ -1,5 +1,16 @@
 # Part Commander :: Change Log
 
+* 2015-0709: 1.0.2 (seanmcdougall) for KSP 1.1
+	+ added persistent PartCommander.cfg settings file which gets created under GameData/PartCommander
+	+ created new Settings window to manage this file
+	+ added optional support for blizzy78's Toolbar (http://forum.kerbalspaceprogram.com/threads/60863)
+	+ stock toolbar button can be disabled through the new Settings window
+	+ added hot key support for showing/hiding windows instead of using toolbar buttons.  Default key combo is Mod + P.
+	+ This can be changed through the Settings window (but be careful not to pick something that KSP already uses).
+	+ you can also disable the hot key altogether through Settings
+	+ added a setting to hide "unactionable" parts... those that just have display fields but no buttons or sliders.
+	+ made the tooltips more visible by setting a solid background colour
+	+ fixed some control locking issues when mousing over a window
 * 2015-0705: 1.0.1 (seanmcdougall) for KSP 1.1
 	+ added .version file
 	+ fixed a bug that prevented the parts list from updating properly when using the filtering/sorting options
