@@ -1,5 +1,7 @@
 # Part Commander :: Change Log
 
+* 2016-0427: 1.1 (seanmcdougall) for KSP 1.1
+	+ fixed and recompiled for KSP 1.1
 * 2015-1120: 1.0.3 (seanmcdougall) for KSP 1.0.5
 	+ recompiled for KSP 1.0.5
 	+ fixes a bug where hiding window with keyboard shortcut failed to release control lock
