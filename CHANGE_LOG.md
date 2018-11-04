@@ -1,5 +1,7 @@
 # Part Commander :: Change Log
 
+* 2017-1011: 1.1.2 (linuxgurugamer) for KSP 1.3.1
+	+ Updated for KSP 1.3.1
 * 2017-0528: 0.1.2 (linuxgurugamer) for KSP 1.3.0
 	+ Updated for 1.3
 * 2016-1102: 0.1.1.1 (linuxgurugamer) for KSP 1.2.2
