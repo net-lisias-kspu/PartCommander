@@ -1,5 +1,7 @@
 # Part Commander :: Change Log
 
+* 2018-0318: 1.1.3.2 (linuxgurugamer) for KSP 1.4.1
+	+ Fix for missing directories
 * 2018-0318: 1.1.3.1 (linuxgurugamer) for KSP 1.4.1
 	+ Fixed unresponsive button when window is opened by config
 	+ Fixed nullref at startup
