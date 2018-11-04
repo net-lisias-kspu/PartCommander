@@ -29,7 +29,7 @@ using ClickThroughFix;
 using ToolbarControl_NS;
 
 
-namespace PartCommanderContinued
+namespace PartCommander
 {
 
     [KSPAddon(KSPAddon.Startup.Flight, false)]

@@ -8,8 +8,8 @@
     <OutputType>Library</OutputType>
     <BaseIntermediateOutputPath>..\..\obj\PartCommander</BaseIntermediateOutputPath>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PartCommanderContinued</RootNamespace>
-    <AssemblyName>PartCommanderContinued</AssemblyName>
+    <RootNamespace>PartCommander</RootNamespace>
+    <AssemblyName>PartCommander</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

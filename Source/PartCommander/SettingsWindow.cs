@@ -7,7 +7,7 @@ using UnityEngine;
 using ClickThroughFix;
 
 
-namespace PartCommanderContinued
+namespace PartCommander
 {
     internal class SettingsWindow
     {

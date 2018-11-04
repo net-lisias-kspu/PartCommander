@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using KSPPluginFramework;
 
-namespace PartCommanderContinued
+namespace PartCommander
 {
     public class Settings : ConfigNodeStorage
     {

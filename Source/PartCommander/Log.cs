@@ -4,7 +4,7 @@ using System.Diagnostics;
 //using UnityEngine;
 
 
-namespace PartCommanderContinued
+namespace PartCommander
 {
     public static class Log
     {
