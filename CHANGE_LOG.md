@@ -1,5 +1,11 @@
 # Part Commander :: Change Log
 
+* 2018-0317: 1.1.3 (linuxgurugamer) for KSP 1.4.1
+	+ Fixed localization strings being displayed in fields
+	+ Added support for the ClickThroughBlocker
+	+ Changed to allow dragging window from anywhere
+	+ Added support for the ToolbarController
+	+ Replaced most "foreach" with (for int i = ) loops for effeciency and memory conservation
 * 2017-1011: 1.1.2 (linuxgurugamer) for KSP 1.3.1
 	+ Updated for KSP 1.3.1
 * 2017-0528: 0.1.2 (linuxgurugamer) for KSP 1.3.0
