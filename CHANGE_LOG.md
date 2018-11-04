@@ -1,5 +1,7 @@
 # Part Commander :: Change Log
 
+* 2018-0727: 1.1.4.1 (linuxgurugamer) for KSP 1.4.4
+	+ Updated .version file for all 1.4.x
 * 2018-0421: 1.1.4 (linuxgurugamer) for KSP 1.4.2
 	+ Fixed nullrefs when doing symmetry parts
 	+ Added toolbar registration
