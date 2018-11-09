@@ -159,6 +159,9 @@
     <Reference Include="ToolbarControl">
       <HintPath>..\..\..\..\..\..\LIB\plugins\ToolbarControl.dll</HintPath>
     </Reference>
+    <Reference Include="KSPe">
+      <HintPath>..\..\..\..\..\..\LIB\plugins\KSPe.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Version.tt">
