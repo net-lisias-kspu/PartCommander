@@ -404,8 +404,9 @@ namespace PartCommander
                  ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
                 MODID,
                 "partCommanderButton",
-                File<PartCommander>.Asset.Solve("textures/toolbar"),
-                File<PartCommander>.Asset.Solve("textures/blizzyToolbar"),
+                KSPe.GameDB.Asset<PartCommander>.Solve("textures/toolbar"),
+                KSPe.GameDB.Asset<PartCommander>.Solve("textures/toolbar"),
+                File<PartCommander>.Asset.Solve("textures/blizzyToolbar.png"),
                 MODNAME
             );
         }

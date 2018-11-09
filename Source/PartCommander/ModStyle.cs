@@ -130,8 +130,6 @@ namespace PartCommander
             guiStyles["settingsButton"].fontSize = fontSize + 2;
         }
 
-        private WWW _imagetex;
-
         public Texture2D GetImage(String path, int width, int height)
         {
             Log.Info("GetImage, path: " + path);
@@ -139,7 +137,7 @@ namespace PartCommander
             // the code below now does that directly
 
             Texture2D img = new Texture2D(width, height, TextureFormat.ARGB32, false);
-			img.LoadImage(File<PartCommander>.Asset.ReadAllBytes(path));            
+			img.LoadImage(File<PartCommander>.Asset.ReadAllBytes(path+".png"));            
 
             return img;
         }
