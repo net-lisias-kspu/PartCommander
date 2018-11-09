@@ -25,6 +25,7 @@ using UnityEngine;
 using KSP.UI.Screens;
 using KSP.Localization;
 
+using KSPe.IO;
 using ClickThroughFix;
 using ToolbarControl_NS;
 
@@ -403,8 +404,8 @@ namespace PartCommander
                  ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
                 MODID,
                 "partCommanderButton",
-                "PartCommanderContinued/textures/toolbar",
-                "PartCommanderContinued/textures/blizzyToolbar",
+                File<PartCommander>.Asset.Solve("textures/toolbar"),
+                File<PartCommander>.Asset.Solve("textures/blizzyToolbar"),
                 MODNAME
             );
         }

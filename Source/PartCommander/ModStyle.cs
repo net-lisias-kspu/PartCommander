@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+
+using KSPe.IO;
 
 namespace PartCommander
 {
@@ -138,15 +138,9 @@ namespace PartCommander
             // Due to the image dimensions, they aren't loaded in to the KSP database properly, 
             // the code below now does that directly
 
-            //Texture2D img = new Texture2D(width, height, TextureFormat.ARGB32, false);
-            //img = GameDatabase.Instance.GetTexture(path, false);
-            
-            
-            Log.Info("Loading image manually");
-            _imagetex = new WWW(KSPUtil.ApplicationRootPath.Replace("\\", "/") +  "/GameData/" + path + ".png");
-            Texture2D img = _imagetex.texture;
-            _imagetex.Dispose();
-            
+            Texture2D img = new Texture2D(width, height, TextureFormat.ARGB32, false);
+			img.LoadImage(File<PartCommander>.Asset.ReadAllBytes(path));            
+
             return img;
         }
 
@@ -154,8 +148,8 @@ namespace PartCommander
         {
             GUIStyle myStyle = new GUIStyle();
             Log.Info("GetToggleButtonStyle, styleName: " + styleName);
-            Texture2D styleOff = GetImage("PartCommanderContinued/textures/" + styleName + "_off", width, height);
-            Texture2D styleOn = GetImage("PartCommanderContinued/textures/" + styleName + "_on", width, height);
+            Texture2D styleOff = GetImage("textures/" + styleName + "_off", width, height);
+            Texture2D styleOn = GetImage("textures/" + styleName + "_on", width, height);
 
             myStyle.name = styleName + "Button";
             myStyle.padding = new RectOffset() { left = 0, right = 0, top = 0, bottom = 0 };
