@@ -1,29 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using KSPPluginFramework;
+
+using KSPe.IO.Data;
 
 namespace PartCommander
 {
-    public class Settings : ConfigNodeStorage
+    public class Settings
     {
-        internal Settings(String FilePath) : base(FilePath) { }
+        private readonly PluginConfiguration CONFIG = PluginConfiguration.CreateForType<PartCommander>();
 
-        [Persistent]
         internal bool enableHotKey = true;
-
-        [Persistent]
         internal KeyCode hotKey = KeyCode.P;
-
-        [Persistent]
         internal bool hideUnAct = false;
-
-        [Persistent]
         internal bool altSkin = false;
-
-        [Persistent]
         internal int fontSize = 12;
-    }
+
+		internal void Load()
+		{
+			CONFIG.load();
+			this.enableHotKey = CONFIG.GetValue<bool>("enableHotKey", this.enableHotKey);
+			this.hotKey = CONFIG.GetValue<KeyCode>("hotKey", this.hotKey);
+			this.hideUnAct = CONFIG.GetValue<bool>("hideUnAct", this.hideUnAct);
+			this.altSkin = CONFIG.GetValue<bool>("altSkin", this.altSkin);
+			this.fontSize = CONFIG.GetValue<int>("fontSize", this.fontSize);
+		}
+
+		internal void Save()
+		{
+			CONFIG.SetValue("enableHotKey", this.enableHotKey);
+			CONFIG.SetValue("hotKey", this.hotKey);
+			CONFIG.SetValue("hideUnAct", this.hideUnAct);
+			CONFIG.SetValue("altSkin", this.altSkin);
+			CONFIG.SetValue("fontSize", this.fontSize);
+			CONFIG.save();
+		}
+	}
 }

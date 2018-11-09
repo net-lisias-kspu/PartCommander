@@ -25,6 +25,7 @@ using UnityEngine;
 using KSP.UI.Screens;
 using KSP.Localization;
 
+using KSPe;
 using KSPe.IO;
 using ClickThroughFix;
 using ToolbarControl_NS;
@@ -63,7 +64,7 @@ namespace PartCommander
 
         internal string showTooltip = "";
 
-        internal Settings settings = new Settings("../PluginData/PartCommanderContinued.cfg");
+        internal Settings settings = new Settings();
 
         public static PartCommander Instance { get; private set; }
         public PartCommander()
@@ -76,7 +77,6 @@ namespace PartCommander
         {
 
             settings.Load();
-            settings.Save();
 
             //modStyle = new ModStyle();
 
@@ -404,8 +404,9 @@ namespace PartCommander
                  ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
                 MODID,
                 "partCommanderButton",
-                File<PartCommander>.Asset.Solve("textures/toolbar"),
-                File<PartCommander>.Asset.Solve("textures/blizzyToolbar"),
+                KSPe.GameDB.Asset<PartCommander>.Solve("textures/toolbar"),
+                KSPe.GameDB.Asset<PartCommander>.Solve("textures/toolbar"),
+                File<PartCommander>.Asset.Solve("textures/blizzyToolbar.png"),
                 MODNAME
             );
         }
