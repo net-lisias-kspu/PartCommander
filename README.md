@@ -38,10 +38,10 @@ To install, place the GameData folder inside your Kerbal Space Program folder.
 
 ### Dependencies
 
-<!-- * [KSP API Extensions/L](https://github.com/net-lisias-ksp/KSPAPIExtensions) 2.0 or later -->
 * Hard Dependencies
+	+ [KSP API Extensions/L](https://github.com/net-lisias-ksp/KSPAPIExtensions) 2.1 or later
 	+ [Click Through Blocker](https://forum.kerbalspaceprogram.com/index.php?/topic/170747-141-click-through-blocker/)
-	+ [Toolbar Control](https://github.com/net-lisias-kspu/ToolbarControl) 
+	+ [Toolbar Control](https://github.com/net-lisias-kspu/ToolbarControl)
 
 ### Licensing
 This work is licensed under [GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) . See [here](./LICENSE).
