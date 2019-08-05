@@ -1,5 +1,9 @@
 ChangeLog for PartCommanderContinued
 
+1.1.5.3
+	Updated AssemblyVersion.tt
+	Added InstallChecker
+
 1.1.5.1
 	Version bump for 1.5 rebuild
 
