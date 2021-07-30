@@ -1,4 +1,10 @@
 ChangeLog
+
+1.1.6.3
+	Renamed DLL for CKAN compatibility
+	Added AssemblyFileVersion
+	Updated version file for 1.12
+
 1.1.6.2
 	Thanks to github user @guilucand for this fix:
 		Fix leak caused by style cloning and texture reallocation
