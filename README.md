@@ -1,6 +1,8 @@
-# Part Commander /L Unofficial
+# Part Commander /L Unleashed
 
-Access the right-click action menus from all parts on the current vessel in a single consolidated interface. Unofficial fork by Lisias.
+Access the right-click action menus from all parts on the current vessel in a single consolidated interface.
+
+[Unleashed](https://ksp.lisias.net/add-ons-unleashed/) fork by Lisias.
 
 
 ## In a Hurry
@@ -19,7 +21,7 @@ Tired of playing "sniper" trying to access a part's right-click menu while hurtl
 
 * consolidates all right-click menus into a single resizable, movable, scrollable window.
 * optional ability to pop off parts into their own windows for monitoring.
-* "Symmetry Lock﻿" feature lets you control all parts within a symmetry group at once. Displayed values are obtained from the "primary" part.
+* "Symmetry Lock" feature lets you control all parts within a symmetry group at once. Displayed values are obtained from the "primary" part.
 * part highlighting so you know which part(s) you're affecting. With symmetrical parts, the primary one is highlighted in orange and the rest in yellow.
 * works in both IVA and Map views.
 * stock and blizzy78 toolbar support.
@@ -44,18 +46,31 @@ To install, place the GameData folder inside your Kerbal Space Program folder.
 	+ [Toolbar Control](https://github.com/net-lisias-kspu/ToolbarControl)
 
 ### Licensing
-This work is licensed under [GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) . See [here](./LICENSE).
 
-Please note the copyrights and trademarks in [NOTICE](./NOTICE).
+This work is licensed under the [GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.txt). See [here](./LICENSE)
+
++ You are free to:
+	- Use : unpack and use the material in any computer or device
+	- Redistribute : redistribute the original package in any medium
+	- Adapt : Reuse, modify or incorporate source code into your works (and redistribute it!) 
++ Under the following terms:
+	- You retain any copyright notices
+	- You recognize and respect any trademarks
+	- You don't impersonate the authors, neither redistribute a derivative that could be misrepresented as theirs.
+	- You credit the author and republish the copyright notices on your works where the code is used.
+	- You relicense (and fully comply) your works using GPL 3.0
+	- You don't mix your work with GPL incompatible works.
+
+See [NOTICE](./NOTICE) for further copyright and trademarks notices.
 
 
 ## UPSTREAM
 
-* [LinuxGuruGamer](https://forum.kerbalspaceprogram.com/index.php?/profile/129964-linuxgurugamer/)
-	+ [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/150122-151-part-commander-continued-new-dependencies/)
-	+ [SpaceDock](https://spacedock.info/mod/1004)
-	+ [GitHub](https://github.com/linuxgurugamer/PartCommander)
 * [seanmcdougall](https://forum.kerbalspaceprogram.com/index.php?/profile/143691-seanmcdougall/): ROOT
 	+ [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/114902-112-part-commander-quick-access-to-part-right-click-action-menus-v111-may-6-2016/)
 	+ [SpaceDock](https://spacedock.info/mod/615/Part%20Commander)
 	+ [GitHub](https://github.com/seanmcdougall/PartCommander)
+* [LinuxGuruGamer](https://forum.kerbalspaceprogram.com/index.php?/profile/129964-linuxgurugamer/)
+	+ [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/150122-151-part-commander-continued-new-dependencies/)
+	+ [SpaceDock](https://spacedock.info/mod/1004)
+	+ [GitHub](https://github.com/linuxgurugamer/PartCommander)

@@ -16,23 +16,14 @@
 	with Part Commander /L Unleashed. If not, see <https://www.gnu.org/licenses/>.
 
 */
-// StringExtensions.cs
-// Adds some extra string methods
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace PartCommander
 {
-
-    public static class StringExtensions
-    {
-        public static bool Contains(this string source, string toCheck, StringComparison comp)
-        {
-            return source.IndexOf(toCheck, comp) >= 0;
-        }
-    }
-
+	public static class LegalMamboJambo
+	{
+		public const string Company = "/L Aerospace KSP Division";
+		public const string Copyright = "© 2018-2021 LisiasT";
+		public const string Product = "PartCommander";
+		public const string Trademark = "PartCommander™ by Sean McDougall; Continued™ by LinuxGuruGamer; /L Unleashed™ by LisiasT";
+	}
 }

@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Part Commander /L Unofficial")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Part Commander /L Unleashed")]
+[assembly: AssemblyDescription("Access the right-click action menus from all parts on the current vessel in a single consolidated interface")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Sean McDougall")]
-[assembly: AssemblyProduct("PartCommander")]
-[assembly: AssemblyCopyright("© Sean McDougall 2015, 2018 LisiasT")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany(PartCommander.LegalMamboJambo.Company)]
+[assembly: AssemblyProduct(PartCommander.LegalMamboJambo.Product)]
+[assembly: AssemblyCopyright(PartCommander.LegalMamboJambo.Copyright)]
+[assembly: AssemblyTrademark(PartCommander.LegalMamboJambo.Trademark)]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -34,7 +34,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion(PartCommander.Version.Number)]
 [assembly: AssemblyFileVersion(PartCommander.Version.Number)]
-
-[assembly: KSPAssemblyDependency("KSPe", 2, 1)]
-[assembly: KSPAssemblyDependency("ClickThroughBlocker", 1, 0)]
-[assembly: KSPAssemblyDependency("ToolbarController", 1, 0)]
+[assembly: KSPAssemblyDependency("KSPe", 2, 4)]
+[assembly: KSPAssemblyDependency("KSPe.UI", 2, 4)]
