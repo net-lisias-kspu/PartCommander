@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using KSPe.IO;
+using GUI = KSPe.UI.GUI;
+using GUILayout = KSPe.UI.GUILayout;
 
 namespace PartCommander
 {
@@ -69,7 +71,7 @@ namespace PartCommander
             blackBackground.SetPixel(0, 0, Color.black);
             blackBackground.Apply();
 
-            Log.Info("Before first call to GetToggleButtonStyle");
+            Log.trace("Before first call to GetToggleButtonStyle");
             guiStyles["resizeButton"] = GetToggleButtonStyle("resize", 20, 20, true);
             guiStyles["symLockButton"] = GetToggleButtonStyle("symlock", 20, 20, false);
             guiStyles["azButton"] = GetToggleButtonStyle("az", 20, 20, false);
@@ -150,7 +152,7 @@ namespace PartCommander
 
         public Texture2D GetImage(String path, int width, int height)
         {
-            Log.Info("GetImage, path: " + path);
+            Log.detail("GetImage, path: {0}", path);
             // Due to the image dimensions, they aren't loaded in to the KSP database properly, 
             // the code below now does that directly
 
@@ -163,7 +165,7 @@ namespace PartCommander
         public GUIStyle GetToggleButtonStyle(string styleName, int width, int height, bool hover)
         {
             GUIStyle myStyle = new GUIStyle();
-            Log.Info("GetToggleButtonStyle, styleName: " + styleName);
+            Log.detail("GetToggleButtonStyle, styleName: {0}", styleName);
             Texture2D styleOff = GetImage("textures/" + styleName + "_off", width, height);
             Texture2D styleOn = GetImage("textures/" + styleName + "_on", width, height);
 

@@ -40,7 +40,6 @@
     <Compile Include="PartCommander.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsWindow.cs" />
-    <Compile Include="ToolbarRegistration.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenario.cs" />
@@ -48,7 +47,11 @@
     <Compile Include="Properties\Version.cs">
       <DependentUpon>Version.tt</DependentUpon>
     </Compile>
+    <Compile Include="Startup.cs" />
+    <Compile Include="ToolbarSupport.cs" />
+    <Compile Include="ModuleManagerSupport.cs" />
     <Compile Include="Properties\LegalMamboJambo.cs" />
+    <Compile Include="UI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="textures\aero_off.png">

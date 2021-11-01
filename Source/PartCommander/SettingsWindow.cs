@@ -22,7 +22,8 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-using ClickThroughFix;
+using GUI = KSPe.UI.GUI;
+using GUILayout = KSPe.UI.GUILayout;
 
 
 namespace PartCommander
@@ -52,7 +53,7 @@ namespace PartCommander
         {
             if (showWindow)
             {
-                windowRect = ClickThruBlocker.GUILayoutWindow(windowId, windowRect, drawWindow, "");
+                windowRect = GUILayout.Window(windowId, windowRect, drawWindow, "");
             }
         }
 

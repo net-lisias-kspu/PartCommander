@@ -25,10 +25,9 @@ using UnityEngine;
 using KSP.UI.Screens;
 using KSP.Localization;
 
-using KSPe;
-using KSPe.IO;
-using ClickThroughFix;
-using ToolbarControl_NS;
+using Toolbar = KSPe.UI.Toolbar;
+using GUI = KSPe.UI.GUI;
+using GUILayout = KSPe.UI.GUILayout;
 
 
 namespace PartCommander
@@ -37,7 +36,7 @@ namespace PartCommander
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class PartCommander : MonoBehaviour
     {
-        internal ToolbarControl toolbarControl = null;
+        internal Toolbar.Button tollbarButton = null;
 
         private List<Part> activeParts = new List<Part>();
         private List<Part> highlightedParts = new List<Part>();
@@ -331,11 +330,6 @@ namespace PartCommander
                 }
             }
 
-            if (PCScenario.Instance.gameSettings.visibleWindow)
-                toolbarControl.SetTrue(false);
-            
-
-
             // Make sure we have something to show
             if (visibleUI && FlightGlobals.ActiveVessel != null && currentWindow != null && PCScenario.Instance != null && PCScenario.Instance.gameSettings.visibleWindow)
             {
@@ -344,15 +338,15 @@ namespace PartCommander
                     GUI.skin = modStyleUnity.skin;
                 else
 #endif
-                    GUI.skin = modStyle.skin;
-                currentWindow.windowRect = ClickThruBlocker.GUILayoutWindow(currentWindow.windowId, currentWindow.windowRect, mainWindow, "");
+                GUI.skin = modStyle.skin;
+                currentWindow.windowRect = GUILayout.Window(currentWindow.windowId, currentWindow.windowRect, mainWindow, "");
                 // Set the default location/size for new windows to be the same as this one
                 PCScenario.Instance.gameSettings.windowDefaultRect = currentWindow.windowRect;
 
                 // Process any popout windows
                 foreach (PCWindow pow in currentWindow.partWindows.Values)
                 {
-                    pow.windowRect = ClickThruBlocker.GUILayoutWindow(pow.windowId, pow.windowRect, partWindow, "");
+                    pow.windowRect = GUILayout.Window(pow.windowId, pow.windowRect, partWindow, "");
                 }
                 if (showTooltip != "" && showTooltip != null)
                 {
@@ -392,29 +386,20 @@ namespace PartCommander
 
         // ------------------------------------------ Application Launcher / UI ---------------------------------------
 
-        internal const string MODID = "PartCommander_NS";
-        internal const string MODNAME = "Part Commander";
-
         void AddLauncherButtons()
         {
-            toolbarControl = gameObject.AddComponent<ToolbarControl>();
-            toolbarControl.AddToAllToolbars(
-                    showWindow,
-                    hideWindow,
-                 ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
-                MODID,
-                "partCommanderButton",
-                KSPe.GameDB.Asset<PartCommander>.Solve("textures/toolbar"),
-                KSPe.GameDB.Asset<PartCommander>.Solve("textures/toolbar"),
-                File<PartCommander>.Asset.Solve("textures/blizzyToolbar.png"),
-                MODNAME
-            );
+            this.tollbarButton = Toolbar.Button.Create(this
+                    , ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW
+                    , UI.Icon.toolbar, UI.Icon.blizzyToolbar
+                    , Version.FriendlyName
+                );
+            this.tollbarButton.Toolbar.Add(Toolbar.Button.ToolbarEvents.Kind.Active, new Toolbar.Button.Event(this.showWindow, this.hideWindow));
+            ToolbarController.Instance.Add(this.tollbarButton);
         }
 
         public void removeLauncherButtons()
         {
-            toolbarControl.OnDestroy();
-            Destroy(toolbarControl);
+            ToolbarController.Instance.Destroy();
         }
 
         public void showUI() // triggered on F2
@@ -445,7 +430,7 @@ namespace PartCommander
 
         public void toggleWindow()
         {
-            PartCommander.Instance.toolbarControl.SetFalse();
+            PartCommander.Instance.tollbarButton.Active = false;
         }
 
         private void resizeWindows()
@@ -816,7 +801,7 @@ namespace PartCommander
                                             }
                                         }
                                     }
-                                    Log.Info("3l");
+                                    Log.dbg("3l");
                                     if (includePart)
                                     {
                                         activeParts.Add(p);
