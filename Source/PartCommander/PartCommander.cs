@@ -1041,17 +1041,21 @@ namespace PartCommander
             return eventCount;
         }
 
+        private static readonly Color btnNrml = new Color(34f / 255f, 199f / 255f, 222f / 255f, 1);
+        private static Texture2D BtnNrmlTex;
         private void showEvent(Part p, bool symLock, PartModule pm, BaseEvent e, string multiEngineMode)
         {
-            GUIStyle bStyle = new GUIStyle(GUI.skin.button);
+            //GUIStyle bStyle = new GUIStyle(GUI.skin.button);
 
             GUILayout.BeginHorizontal();
 
-
-            Color btnNrml = new Color(34f / 255f, 199f / 255f, 222f / 255f, 1);
-            Texture2D BtnNrmlTex = new Texture2D(1, 1);
-            BtnNrmlTex.SetPixel(0, 0, btnNrml);
+            if (null == BtnNrmlTex)
+            {
+                BtnNrmlTex = new Texture2D(1, 1);
+                BtnNrmlTex.SetPixel(0, 0, btnNrml);
+            }
             BtnNrmlTex.Apply();
+
 #if false
             Color btnHover = new Color(60f / 255f, 205f / 255f, 226f / 255f, 1);
             Texture2D BtnHoverText = new Texture2D(1, 1);
@@ -1080,7 +1084,7 @@ namespace PartCommander
             bStyle.onNormal.background = BtnNrmlTex;
 
 #endif
-            if (GUILayout.Button("", bStyle, GUILayout.Width(50), GUILayout.Height(15)))
+            if (GUILayout.Button("", /*bStyle,*/ GUILayout.Width(50), GUILayout.Height(15)))
             {               
                 if (symLock)
                 {
