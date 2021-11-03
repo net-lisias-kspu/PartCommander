@@ -26,6 +26,7 @@ using UnityEngine;
 using KSPe.IO;
 using GUI = KSPe.UI.GUI;
 using GUILayout = KSPe.UI.GUILayout;
+using Asset = KSPe.IO.Asset<PartCommander.Startup>;
 
 namespace PartCommander
 {
@@ -150,24 +151,18 @@ namespace PartCommander
             guiStyles["settingsButton"].fontSize = fontSize + 2;
         }
 
-        public Texture2D GetImage(String path, int width, int height)
-        {
-            Log.detail("GetImage, path: {0}", path);
-            // Due to the image dimensions, they aren't loaded in to the KSP database properly, 
-            // the code below now does that directly
+		public Texture2D GetImage(String path, int width, int height)
+		{
+			Log.detail("GetImage, path: {0}", path);
+			return Asset.Texture2D.LoadFromFile("textures", path); ;
+		}
 
-            Texture2D img = new Texture2D(width, height, TextureFormat.ARGB32, false);
-			img.LoadImage(File<PartCommander>.Asset.ReadAllBytes(path+".png"));            
-
-            return img;
-        }
-
-        public GUIStyle GetToggleButtonStyle(string styleName, int width, int height, bool hover)
+		public GUIStyle GetToggleButtonStyle(string styleName, int width, int height, bool hover)
         {
             GUIStyle myStyle = new GUIStyle();
             Log.detail("GetToggleButtonStyle, styleName: {0}", styleName);
-            Texture2D styleOff = GetImage("textures/" + styleName + "_off", width, height);
-            Texture2D styleOn = GetImage("textures/" + styleName + "_on", width, height);
+            Texture2D styleOff = GetImage(styleName + "_off", width, height);
+            Texture2D styleOn = GetImage(styleName + "_on", width, height);
 
             myStyle.name = styleName + "Button";
             myStyle.padding = new RectOffset() { left = 0, right = 0, top = 0, bottom = 0 };
